@@ -10,5 +10,10 @@ export default defineConfig({
       // 配置 @ 的路径别名
       '@': join(__dirname, './src/')
     }
+  },
+  css: {
+    modules: {
+      localsConvention: 'camelCaseOnly',
+    }
   }
 })
