@@ -41,7 +41,7 @@ const RootMenu: FC = () => {
   //默认被选中的菜单项
   const selectedKey = location.pathname === "/" ? "/home" : location.pathname;
   const [openKeys, setOpenKeys] = useState<string[]>([
-    getOpenKey(data.menus, selectedKey),
+    getOpenKey(data?.menus, selectedKey),
   ]);
   const onOpenChange: MenuProps["onOpenChange"] = (keys) => {
     const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
@@ -86,10 +86,13 @@ const resolveMenuIcon = (menus: MenuItem[]) => {
 };
 //定义一个递归函数，递归查找当前选中的节点的父节点的key值并return
 const getOpenKey = (
-  menus: MenuItem[],
+  menus: MenuItem[] | undefined,
   selectedKey: string,
   parentKey: string = ""
 ): string => {
+  if (!menus) {
+    return "";
+  }
   for (const item of menus) {
     if (item.key === selectedKey) {
       return parentKey;
