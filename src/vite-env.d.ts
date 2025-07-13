@@ -10,15 +10,18 @@ type RegForm = {
 type LoginForm = Omit<RegForm, "repassword">;
 
 //----------接口返回的数据类型--------------------
+
 interface BaseResponse<T = unknown> {
   code: number;
   message: string;
   data?: T;
+
 }
 
 interface LoginResponse extends BaseResponse {
   token: string; // 登录成功后返回的token
 }
+
 //用户的基本信息
 
 type User = {
@@ -37,3 +40,4 @@ type MenuItem = {
   icon: React.ReactNode;
   children?: MenuItem[];
 };
+

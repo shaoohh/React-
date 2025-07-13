@@ -1,7 +1,9 @@
 import { FC } from "react";
 import { Form, Input, Button, Space, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+
 import { Link } from "react-router-dom";
+
 import { useSearchParams, useFetcher } from "react-router-dom";
 import type { ActionFunctionArgs } from "react-router-dom";
 import { loginApi } from "@/api/auth-api";
@@ -18,10 +20,12 @@ const Login: FC = () => {
   };
   return (
     <Form
+
       initialValues={{
         username: searchParams.get("uname") || "",
         Password: "",
       }}
+
       size="large"
       name="login"
       style={{ maxWidth: 360 }}
@@ -81,7 +85,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   //提示用户登录成功
   message.success(res.message);
+
   //return redirect("/"); //重定向到首页
   return null; //不重定向，使用useFetcher提交表单后会自动刷新页面
+
 };
 export default Login;

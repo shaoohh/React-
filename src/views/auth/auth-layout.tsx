@@ -1,5 +1,6 @@
 import { FC, PropsWithChildren } from "react";
 import styles from "@/views/auth/css/auth-layout.module.less";
+
 import { Navigate } from "react-router-dom";
 import useAppStore, { selectToken } from "@/store/app-store.ts";
 const AuthLayout: FC<PropsWithChildren> = ({ children }) => {
@@ -13,6 +14,7 @@ const AuthLayout: FC<PropsWithChildren> = ({ children }) => {
       </div>
     );
   }
+
 };
 
 export default AuthLayout;

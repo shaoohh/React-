@@ -2,7 +2,9 @@ import { createBrowserRouter } from "react-router-dom";
 //导入路由组件
 import Reg, { action as regAction } from "@/views/auth/reg.tsx";
 import Login, { action as loginAction } from "@/views/auth/login.tsx";
+
 import Root, { loader as rootLoader } from "@/views/root/root.tsx";
+
 import AuthLayout from "@/views/auth/auth-layout.tsx";
 import AuthRoot from "@/views/root/auth-root.tsx";
 import Home from "@/views/home/home.tsx";
@@ -32,6 +34,7 @@ const router = createBrowserRouter([
       </AuthLayout>
     ),
   },
+
   {
     path: "/",
     element: (
@@ -80,6 +83,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+
 ]);
 
 export default router;
