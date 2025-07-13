@@ -3,6 +3,10 @@ import config from "@/config.json";
 import qs from "qs";
 import type { AxiosRequestTransformer, AxiosError } from "axios";
 import { message } from "antd";
+
+import useAppStore from "@/store/app-store";
+import { resetAllStore } from "@/store/resetters";
+
 const instance = axios.create({
   baseURL: config.baseURL,
   //timeout: 1000,
@@ -27,6 +31,12 @@ instance.interceptors.request.use(
       config.transformRequest = [];
     } else {
       config.transformRequest = requetTransformer;
+
+    }
+    //为请求头按需挂载 token
+    const token = useAppStore.getState().token;
+    if (url?.includes("/my") && token) {
+      config.headers.Authorization = token;
     }
 
     return config;
@@ -51,7 +61,18 @@ instance.interceptors.response.use(
     //如果包含按照response 中的data.message提示用户
     //如果不包含，说明是网络错误，提示用户网络异常
     if (error.response && error.response.data) {
-      message.error(error.response.data.message);
+
+      //有响应体的情况
+      if (error.response.status === 401) {
+        //token过期
+        useAppStore.getState().token && message.error("登录过期，请重新登录！");
+        //清空store
+        resetAllStore();
+        //跳转到登录页
+      } else {
+        message.error(error.response.data.message);
+      }
+
       return Promise.reject(error.response.data);
     } else {
       //无响应体的错误
