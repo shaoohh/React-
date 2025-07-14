@@ -8,3 +8,7 @@ export const getUserApi = () =>
 
 export const getMenuApi = () =>
   axios.get<null, BaseResponse<MenuItem[]>>("/my/menus");
+
+//更新用户的基本信息
+export const updateUserInfoApi = (data: FormData) =>
+  axios.put<null, BaseResponse>("/my/userinfo", data);

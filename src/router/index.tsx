@@ -9,7 +9,7 @@ import AuthLayout from "@/views/auth/auth-layout.tsx";
 import AuthRoot from "@/views/root/auth-root.tsx";
 import Home from "@/views/home/home.tsx";
 import UserAvatar from "@/views/user/user-avatar";
-import UserInfo from "@/views/user/user-info";
+import UserInfo, { action as userInfoAction } from "@/views/user/user-info";
 import UserPassword from "@/views/user/user-password";
 import ArticleAdd from "@/views/article/article-add";
 import ArticleCate from "@/views/article/article-cate";
@@ -56,6 +56,7 @@ const router = createBrowserRouter([
       {
         path: "user-info",
         element: <UserInfo />,
+        action: userInfoAction,
       },
       {
         path: "user-avatar",
@@ -83,7 +84,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-
 ]);
 
 export default router;

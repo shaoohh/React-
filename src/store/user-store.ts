@@ -36,6 +36,13 @@ export const selectName = (state: UserStoreType) =>
   state.user.nickname || state.user.username;
 //头像
 export const selectAvatar = (state: UserStoreType) => state.user.user_pic;
+
+//用户信息
+export const selectUserInfo = (state: UserStoreType) => ({
+  id: state.user.id,
+  nickname: state.user.nickname,
+  email: state.user.email,
+});
 //导出store的hook
 export default useUserStore;
 

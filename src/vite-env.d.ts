@@ -6,6 +6,7 @@ type RegForm = {
   password: string;
   repassword: string;
 };
+type UserInfoForm = Pick<User, "id" | "nickname" | "email">;
 
 type LoginForm = Omit<RegForm, "repassword">;
 
@@ -15,7 +16,6 @@ interface BaseResponse<T = unknown> {
   code: number;
   message: string;
   data?: T;
-
 }
 
 interface LoginResponse extends BaseResponse {
@@ -40,4 +40,3 @@ type MenuItem = {
   icon: React.ReactNode;
   children?: MenuItem[];
 };
-
