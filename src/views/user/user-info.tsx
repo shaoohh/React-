@@ -25,7 +25,7 @@ const UserInfo: FC = () => {
       onFinish={onFinish}
       autoComplete="off"
     >
-      <Form.Item label="id" name="id">
+      <Form.Item label="id" name="id" hidden>
         <Input readOnly />
       </Form.Item>
       <Form.Item

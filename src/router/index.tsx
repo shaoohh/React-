@@ -10,7 +10,9 @@ import AuthRoot from "@/views/root/auth-root.tsx";
 import Home from "@/views/home/home.tsx";
 import UserAvatar from "@/views/user/user-avatar";
 import UserInfo, { action as userInfoAction } from "@/views/user/user-info";
-import UserPassword from "@/views/user/user-password";
+import UserPassword, {
+  action as userPwdAction,
+} from "@/views/user/user-password";
 import ArticleAdd from "@/views/article/article-add";
 import ArticleCate from "@/views/article/article-cate";
 import ArticleEdit from "@/views/article/article-edit";
@@ -65,6 +67,7 @@ const router = createBrowserRouter([
       {
         path: "user-pwd",
         element: <UserPassword />,
+        action: userPwdAction,
       },
       {
         path: "art-cate",

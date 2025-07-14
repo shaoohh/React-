@@ -9,6 +9,11 @@ type RegForm = {
 type UserInfoForm = Pick<User, "id" | "nickname" | "email">;
 
 type LoginForm = Omit<RegForm, "repassword">;
+type ResetPwdForm = {
+  old_pwd: string;
+  new_pwd: string;
+  re_pwd: string;
+};
 
 //----------接口返回的数据类型--------------------
 
