@@ -16,3 +16,6 @@ export const updateUserInfoApi = (data: FormData) =>
 //修改密码的接口
 export const updateUserPwdApi = (data: FormData) =>
   axios.patch<null, BaseResponse>("/my/updatepwd", data);
+//更新用户的头像的接口
+export const updateAvatarApi = (data: FormData) =>
+  axios.patch<null, BaseResponse>("/my/update/avatar", data);

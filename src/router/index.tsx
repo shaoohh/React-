@@ -8,7 +8,9 @@ import Root, { loader as rootLoader } from "@/views/root/root.tsx";
 import AuthLayout from "@/views/auth/auth-layout.tsx";
 import AuthRoot from "@/views/root/auth-root.tsx";
 import Home from "@/views/home/home.tsx";
-import UserAvatar from "@/views/user/user-avatar";
+import UserAvatar, {
+  action as userAvatarAction,
+} from "@/views/user/user-avatar";
 import UserInfo, { action as userInfoAction } from "@/views/user/user-info";
 import UserPassword, {
   action as userPwdAction,
@@ -63,6 +65,7 @@ const router = createBrowserRouter([
       {
         path: "user-avatar",
         element: <UserAvatar />,
+        action: userAvatarAction,
       },
       {
         path: "user-pwd",
