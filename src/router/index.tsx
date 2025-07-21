@@ -16,9 +16,13 @@ import UserPassword, {
   action as userPwdAction,
 } from "@/views/user/user-password";
 import ArticleAdd from "@/views/article/article-add";
-import ArticleCate from "@/views/article/article-cate";
+import ArticleCate, {
+  loader as articleCateLoader,
+  action as artCateAction,
+} from "@/views/article/article-cate";
 import ArticleEdit from "@/views/article/article-edit";
 import ArticleList from "@/views/article/article-list";
+
 const router = createBrowserRouter([
   {
     path: "/reg",
@@ -75,6 +79,8 @@ const router = createBrowserRouter([
       {
         path: "art-cate",
         element: <ArticleCate />,
+        loader: articleCateLoader,
+        action: artCateAction,
       },
       {
         path: "art-add",

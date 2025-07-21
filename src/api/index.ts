@@ -31,8 +31,18 @@ instance.interceptors.request.use(
       config.transformRequest = [];
     } else {
       config.transformRequest = requetTransformer;
-
     }
+    //为config挂载请求头params的转换器 把FormData转换为querystring
+    config.paramsSerializer = {
+      serialize(params) {
+        console.log(params);
+        if (params instanceof FormData) {
+          return qs.stringify(Object.fromEntries(params));
+        } else {
+          return qs.stringify(params);
+        }
+      },
+    };
     //为请求头按需挂载 token
     const token = useAppStore.getState().token;
     if (url?.includes("/my") && token) {
@@ -61,7 +71,6 @@ instance.interceptors.response.use(
     //如果包含按照response 中的data.message提示用户
     //如果不包含，说明是网络错误，提示用户网络异常
     if (error.response && error.response.data) {
-
       //有响应体的情况
       if (error.response.status === 401) {
         //token过期

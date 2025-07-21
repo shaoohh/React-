@@ -14,6 +14,7 @@ type ResetPwdForm = {
   new_pwd: string;
   re_pwd: string;
 };
+type ArtCateAddForm = Omit<CateItem, "id">;
 
 //----------接口返回的数据类型--------------------
 
@@ -44,4 +45,11 @@ type MenuItem = {
   label: string;
   icon: React.ReactNode;
   children?: MenuItem[];
+};
+//文章分类的TS类型
+
+type CateItem = {
+  readonly id: number;
+  cate_name: string;
+  cate_alias: string;
 };
