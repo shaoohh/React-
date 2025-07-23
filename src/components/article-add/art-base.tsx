@@ -1,9 +1,13 @@
 import type { FC } from "react";
 import { Form, Input, Button, Checkbox, Select } from "antd";
 import { useLoaderData } from "react-router-dom";
-import useArtAddStore, { setCurrent } from "@/store/art-add-store";
+import useArtAddStore, {
+  setCurrent,
+  setArticleBase,
+} from "@/store/art-add-store";
 import { Move, selectArticleBase } from "@/store/art-add-store";
 import { useLayoutEffect } from "react";
+import type { FormProps } from "antd";
 const ArticleBase: FC = () => {
   const loaderData = useLoaderData() as { cates: CateItem[] } | null;
   const [formRef] = Form.useForm();
@@ -15,6 +19,11 @@ const ArticleBase: FC = () => {
     console.log("Success:", values);
     setCurrent(Move.next);
   };
+  const handleValuesChange: FormProps["onValuesChange"] = (
+    changedValues: ArticleAddBaseForm
+  ) => {
+    setArticleBase(changedValues);
+  };
   return (
     <>
       <Form
@@ -24,6 +33,7 @@ const ArticleBase: FC = () => {
         style={{ maxWidth: 600 }}
         onFinish={onFinish}
         autoComplete="off"
+        onValuesChange={handleValuesChange}
       >
         <Form.Item
           label="文章标题"

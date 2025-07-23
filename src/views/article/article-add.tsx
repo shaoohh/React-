@@ -1,11 +1,23 @@
 import type { FC } from "react";
-import { Steps } from "antd";
+import { message, Steps } from "antd";
 import ArticleBase from "@/components/article-add/art-base";
 import { getCateListApi } from "@/api/cate-api";
 import to from "await-to-js";
-import useArtADDStore, { selectCurrent } from "@/store/art-add-store";
+import useArtADDStore, {
+  clearArticle,
+  resetCurrent,
+  selectCurrent,
+  selectHasHydrated,
+  setCurrent,
+} from "@/store/art-add-store";
+import { postArticleApi } from "@/api/article-api";
 import { ArticleSteps } from "@/store/art-add-store";
 import ArticleCover from "@/components/article-add/art-cover";
+import ArticleContent from "@/components/article-add/art-content";
+import ArticleResult from "@/components/article-add/art-result";
+import localforage from "@/utils/localforage";
+import { StorageValue } from "zustand/middleware";
+import type { ArtAddStore } from "@/store/art-add-store";
 //静态数据源,没必要定义在组件中
 const stepItems = [
   {
@@ -24,24 +36,56 @@ const stepItems = [
 const ArticleAdd: FC = () => {
   // 从store中获取当前步骤值
   const current = useArtADDStore(selectCurrent);
+  const hasHydrated = useArtADDStore(selectHasHydrated);
   return (
-    <div>
-      {/* 步骤条 */}
-      <Steps size="small" current={current} items={stepItems} />
-      <div style={{ marginTop: 20 }}>
-        {" "}
-        {/* 根据步骤条的current值，渲染不同的组件 */}
-        {current === ArticleSteps.base && <ArticleBase />}
-        {current === ArticleSteps.cover && <ArticleCover />}
+    hasHydrated && (
+      <div>
+        {/* 步骤条 */}
+        <Steps size="small" current={current} items={stepItems} />
+        <div style={{ marginTop: 20 }}>
+          {" "}
+          {/* 根据步骤条的current值，渲染不同的组件 */}
+          {current === ArticleSteps.base && <ArticleBase />}
+          {current === ArticleSteps.cover && <ArticleCover />}
+          {current === ArticleSteps.content && <ArticleContent />}
+          {current === ArticleSteps.done && <ArticleResult />}
+        </div>
       </div>
-    </div>
+    )
   );
 };
 export default ArticleAdd;
 
 export const loader = async () => {
+  //获取store中current的值 如果值为3 立即重置为0
+  // const current = useArtADDStore.getState().current;
+  // if (current === ArticleSteps.done) {
+  //   useArtADDStore.setState({ current: 0 });
+  // }
+  const localData = await localforage.getItem<StorageValue<ArtAddStore>>(
+    "art-add-store"
+  );
+  if (localData?.state.current === ArticleSteps.done) {
+    resetCurrent();
+  }
   const [err, res] = await to(getCateListApi());
   if (err) return null;
 
   return { cates: res.data };
+};
+export const action = async () => {
+  const article = useArtADDStore.getState().article;
+  //需要把对象格式的请求体数据转换为FormData格式
+  const fd = new FormData();
+  for (const key in article) {
+    fd.append(key, article[key]);
+  }
+  const [err] = await to(postArticleApi(fd));
+  if (err) return null;
+  //添加文章成功
+  setCurrent();
+  const msg = article.state === "草稿" ? "文章已保存" : "文章已发布";
+  message.success(msg);
+  clearArticle();
+  return { msg };
 };

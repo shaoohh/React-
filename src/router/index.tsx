@@ -17,6 +17,7 @@ import UserPassword, {
 } from "@/views/user/user-password";
 import ArticleAdd, {
   loader as ArtAddLoader,
+  action as ArtAddAction,
 } from "@/views/article/article-add";
 import ArticleCate, {
   loader as articleCateLoader,
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
         path: "art-add",
         element: <ArticleAdd />,
         loader: ArtAddLoader,
+        action: ArtAddAction,
+        shouldRevalidate: () => {
+          return false;
+        },
       },
       {
         path: "art-edit/:id",

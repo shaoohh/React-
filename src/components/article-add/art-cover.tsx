@@ -1,22 +1,52 @@
 import type { FC } from "react";
-import { Space, Button, Avatar } from "antd";
+import { useRef } from "react";
+import { Space, Button, Avatar, message } from "antd";
 import { setCurrent } from "@/store/art-add-store";
-import { Move } from "@/store/art-add-store";
+import useArtAddStore, { Move, selectCover } from "@/store/art-add-store";
+import { setArticleCover } from "@/store/art-add-store";
 const ArticleCover: FC = () => {
+  const iptRef = useRef<HTMLInputElement>(null);
+  const coverURL = useArtAddStore(selectCover);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.currentTarget.files;
+    if (!files || files.length === 0) return;
+    setArticleCover(files[0]);
+  };
+  const handleNext = () => {
+    if (!coverURL) {
+      return message.error("请选择文章封面");
+    }
+    setCurrent(Move.next);
+  };
   return (
     <>
       <Space direction="vertical">
-        <Avatar size={300} shape="square">
-          请选择文章封面
-        </Avatar>
+        {coverURL ? (
+          <Avatar size={300} shape="square" src={coverURL} />
+        ) : (
+          <Avatar size={300} shape="square">
+            请选择文章封面
+          </Avatar>
+        )}
+
         <Space direction="horizontal">
           <Button type="primary" onClick={() => setCurrent(Move.prev)}>
             上一步
           </Button>
-          <Button type="primary">选择</Button>
-          <Button type="primary" onClick={() => setCurrent(Move.next)}>
+          <Button type="primary" onClick={() => iptRef.current?.click()}>
+            选择封面
+          </Button>
+          <Button type="primary" onClick={handleNext}>
             下一步
           </Button>
+          {/*文件选择器 */}
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            ref={iptRef}
+            onChange={handleFileChange}
+          />
         </Space>
       </Space>
     </>

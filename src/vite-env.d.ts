@@ -21,7 +21,9 @@ type ArticleAddForm = {
   content: string;
   state: "草稿" | "已发布";
   cover_img: Blob;
+  [x: string]: string | Blob;
 };
+type ArticleAddBaseForm = partial<Pick<ArticleAddForm, "title" | "cate_id">>;
 
 //----------接口返回的数据类型--------------------
 
