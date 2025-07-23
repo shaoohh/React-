@@ -15,7 +15,9 @@ import UserInfo, { action as userInfoAction } from "@/views/user/user-info";
 import UserPassword, {
   action as userPwdAction,
 } from "@/views/user/user-password";
-import ArticleAdd from "@/views/article/article-add";
+import ArticleAdd, {
+  loader as ArtAddLoader,
+} from "@/views/article/article-add";
 import ArticleCate, {
   loader as articleCateLoader,
   action as artCateAction,
@@ -85,6 +87,7 @@ const router = createBrowserRouter([
       {
         path: "art-add",
         element: <ArticleAdd />,
+        loader: ArtAddLoader,
       },
       {
         path: "art-edit/:id",

@@ -15,6 +15,13 @@ type ResetPwdForm = {
   re_pwd: string;
 };
 type ArtCateAddForm = Omit<CateItem, "id">;
+type ArticleAddForm = {
+  title: string;
+  cate_id: number;
+  content: string;
+  state: "草稿" | "已发布";
+  cover_img: Blob;
+};
 
 //----------接口返回的数据类型--------------------
 
