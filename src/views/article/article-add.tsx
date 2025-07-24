@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { message, Steps } from "antd";
+import { message, Steps, FloatButton, Modal } from "antd";
 import ArticleBase from "@/components/article-add/art-base";
 import { getCateListApi } from "@/api/cate-api";
 import to from "await-to-js";
@@ -18,6 +18,8 @@ import ArticleResult from "@/components/article-add/art-result";
 import localforage from "@/utils/localforage";
 import { StorageValue } from "zustand/middleware";
 import type { ArtAddStore } from "@/store/art-add-store";
+import { ClearOutlined } from "@ant-design/icons";
+import { useEffect, useRef } from "react";
 //静态数据源,没必要定义在组件中
 const stepItems = [
   {
@@ -34,9 +36,27 @@ const stepItems = [
   },
 ];
 const ArticleAdd: FC = () => {
+  const modalRef = useRef<() => void>();
+  const HandleClean = () => {
+    modalRef.current = Modal.confirm({
+      title: "操作提示",
+      content: "此操作会清空表单中填写的所有数据，确认清空吗？",
+      okText: "确认",
+      cancelText: "取消",
+      onOk() {
+        clearArticle();
+        resetCurrent();
+        message.success("清空成功");
+      },
+    }).destroy;
+  };
   // 从store中获取当前步骤值
   const current = useArtADDStore(selectCurrent);
   const hasHydrated = useArtADDStore(selectHasHydrated);
+  useEffect(() => {
+    //返回一个清理函数,当组件卸载时会被执行
+    return () => modalRef.current && modalRef.current();
+  }, []);
   return (
     hasHydrated && (
       <div>
@@ -50,6 +70,12 @@ const ArticleAdd: FC = () => {
           {current === ArticleSteps.content && <ArticleContent />}
           {current === ArticleSteps.done && <ArticleResult />}
         </div>
+        {/* 重置按钮 */}
+        <FloatButton
+          type="primary"
+          icon={<ClearOutlined />}
+          onClick={HandleClean}
+        />
       </div>
     )
   );
