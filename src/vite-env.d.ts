@@ -24,6 +24,12 @@ type ArticleAddForm = {
   [x: string]: string | Blob;
 };
 type ArticleAddBaseForm = partial<Pick<ArticleAddForm, "title" | "cate_id">>;
+type ArtListQuery = {
+  pagenum: number;
+  pagesize: number;
+  cate_id: number | string;
+  state: string;
+};
 
 //----------接口返回的数据类型--------------------
 
@@ -37,6 +43,10 @@ interface LoginResponse extends BaseResponse {
   token: string; // 登录成功后返回的token
 }
 
+//文章了列表接口返回的类型
+interface ArticleListResponse extends BaseResponse<Article[]> {
+  total: number;
+}
 //用户的基本信息
 
 type User = {
@@ -61,4 +71,13 @@ type CateItem = {
   readonly id: number;
   cate_name: string;
   cate_alias: string;
+};
+//文章类型
+
+type Article = {
+  readonly id: number;
+  title: string;
+  pub_date: string;
+  state: "草稿" | "已发布";
+  cate_name: string;
 };

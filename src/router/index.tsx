@@ -24,7 +24,10 @@ import ArticleCate, {
   action as artCateAction,
 } from "@/views/article/article-cate";
 import ArticleEdit from "@/views/article/article-edit";
-import ArticleList from "@/views/article/article-list";
+import ArticleList, {
+  loader as artListLoader,
+  action as artListAction,
+} from "@/views/article/article-list";
 
 const router = createBrowserRouter([
   {
@@ -101,6 +104,8 @@ const router = createBrowserRouter([
       {
         path: "art-list",
         element: <ArticleList />,
+        loader: artListLoader,
+        action: artListAction,
       },
     ],
   },
