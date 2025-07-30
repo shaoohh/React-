@@ -23,7 +23,10 @@ import ArticleCate, {
   loader as articleCateLoader,
   action as artCateAction,
 } from "@/views/article/article-cate";
-import ArticleEdit from "@/views/article/article-edit";
+import ArticleEdit, {
+  loader as artEditLoader,
+  action as artEditAction,
+} from "@/views/article/article-edit";
 import ArticleList, {
   loader as artListLoader,
   action as artListAction,
@@ -100,6 +103,9 @@ const router = createBrowserRouter([
       {
         path: "art-edit/:id",
         element: <ArticleEdit />,
+        loader: artEditLoader,
+        action: artEditAction,
+        shouldRevalidate: () => false,
       },
       {
         path: "art-list",

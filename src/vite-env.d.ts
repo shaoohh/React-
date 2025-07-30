@@ -23,7 +23,9 @@ type ArticleAddForm = {
   cover_img: Blob;
   [x: string]: string | Blob;
 };
+type ArticleEditForm = ArticleAddForm & { readonly id: string };
 type ArticleAddBaseForm = partial<Pick<ArticleAddForm, "title" | "cate_id">>;
+type ArticleEditBaseForm = ArticleAddBaseForm;
 type ArtListQuery = {
   pagenum: number;
   pagesize: number;

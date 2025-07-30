@@ -12,7 +12,7 @@ import useArtAddStore, {
   setArticleState,
 } from "@/store/art-add-store";
 import styles from "@/components/article-add/css/art-content.module.less";
-const modules = {
+export const modules = {
   toolbar: [
     ["bold", "italic", "underline", "strike"], // toggled buttons
     ["blockquote", "code-block"],

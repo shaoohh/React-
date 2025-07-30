@@ -11,3 +11,14 @@ export const getArticleListApi = (data: ArtListQuery) =>
 
 export const deleteArticleApi = (data: FormData) =>
   axios.delete<null, BaseResponse>("/my/article/info", { params: data });
+
+//根据id获取文章详情
+export const getArticleApi = (id: string) =>
+  axios.get<null, BaseResponse<ArticleEditForm>>("/my/article/info", {
+    params: { id },
+  });
+
+//修改文章的接口
+
+export const putArticleApi = (data: FormData) =>
+  axios.put<null, BaseResponse>("/my/article/info", data);

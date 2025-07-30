@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { Breadcrumb } from "antd";
 import BreadcrumbItem from "antd/es/breadcrumb/BreadcrumbItem";
-import { useLoaderData, useLocation } from "react-router-dom";
+import { useLoaderData, useLocation, matchPath } from "react-router-dom";
 import { useMemo } from "react";
 type BreadcrumbItem = {
   title: string;
@@ -28,7 +28,8 @@ const resolveBreadcrumbItems = (
     return undefined;
   }
   for (const item of menus) {
-    if (item.key === nowPath) {
+    const matchResult = matchPath(item.key, nowPath);
+    if (matchResult) {
       breadcrumbItems.unshift({ title: item.label });
       return breadcrumbItems;
     }

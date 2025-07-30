@@ -21,7 +21,7 @@ import type { ArtAddStore } from "@/store/art-add-store";
 import { ClearOutlined } from "@ant-design/icons";
 import { useEffect, useRef } from "react";
 //静态数据源,没必要定义在组件中
-const stepItems = [
+export const stepItems = [
   {
     title: "基本信息",
   },
