@@ -1,14 +1,15 @@
 import type { FC } from "react";
 import { Button, Form, Input, message, Space, Spin } from "antd";
-import { useSubmit, useActionData, useNavigation } from "react-router-dom";
+import { useSubmit, useActionData } from "react-router-dom";
 import type { ActionFunctionArgs } from "react-router-dom";
 import { updateUserPwdApi } from "@/api/user-api";
 import to from "await-to-js";
+import { useNavSubmitting } from "@/utils/hooks";
 const UserPassword: FC = () => {
+  const submitting = useNavSubmitting("PATCH");
   const [formRef] = Form.useForm();
   const submit = useSubmit();
   const actionData = useActionData() as { result: boolean } | null;
-  const navigation = useNavigation();
   if (actionData?.result) {
     //如果actionData有result属性且为true，重置表单
     formRef.resetFields();
@@ -26,7 +27,7 @@ const UserPassword: FC = () => {
       onFinish={onFinish}
       autoComplete="off"
     >
-      <Spin spinning={navigation.state !== "idle"} delay={200}>
+      <Spin spinning={submitting} delay={200}>
         <Form.Item
           label="原密码"
           name="old_pwd"

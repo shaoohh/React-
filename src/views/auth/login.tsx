@@ -20,12 +20,10 @@ const Login: FC = () => {
   };
   return (
     <Form
-
       initialValues={{
         username: searchParams.get("uname") || "",
         Password: "",
       }}
-
       size="large"
       name="login"
       style={{ maxWidth: 360 }}
@@ -63,7 +61,8 @@ const Login: FC = () => {
             block
             type="primary"
             htmlType="submit"
-            loading={loginFetcher.state !== "idle" && { delay: 200 }}
+            loading={loginFetcher.state === "submitting" && { delay: 200 }}
+            disabled={loginFetcher.state === "submitting"}
           >
             Log in
           </Button>
@@ -88,6 +87,5 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   //return redirect("/"); //重定向到首页
   return null; //不重定向，使用useFetcher提交表单后会自动刷新页面
-
 };
 export default Login;

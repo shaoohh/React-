@@ -3,13 +3,14 @@ import { Avatar, Space, Button, message } from "antd";
 import useUserStore, { selectAvatar } from "@/store/user-store";
 import { useMemo, useRef, useState } from "react";
 import { updateAvatarApi } from "@/api/user-api";
-import { ActionFunctionArgs, useSubmit, useNavigation } from "react-router-dom";
+import { ActionFunctionArgs, useSubmit } from "react-router-dom";
 import to from "await-to-js";
+import { useNavSubmitting } from "@/utils/hooks";
 const UserAvatar: FC = () => {
+  const submitting = useNavSubmitting("PATCH");
   const avatar = useUserStore(selectAvatar);
   const [newAvatar, setNewAvatar] = useState("");
   const submit = useSubmit();
-  const navigation = useNavigation();
   const iptRef = useRef<HTMLInputElement>(null);
   const isDisabled = useMemo(
     () => !newAvatar || newAvatar === avatar,
@@ -57,7 +58,7 @@ const UserAvatar: FC = () => {
           type="primary"
           disabled={isDisabled}
           onClick={saveAvatar}
-          loading={navigation.state !== "idle" && { delay: 200 }}
+          loading={submitting && { delay: 200 }}
         >
           {" "}
           保存头像

@@ -6,9 +6,9 @@ import { useSubmit } from "react-router-dom";
 import type { ActionFunctionArgs } from "react-router-dom";
 import { updateUserInfoApi } from "@/api/user-api";
 import to from "await-to-js";
-import { useNavigation } from "react-router-dom";
+import { useNavSubmitting } from "@/utils/hooks";
 const UserInfo: FC = () => {
-  const navigation = useNavigation();
+  const submitting = useNavSubmitting("PUT");
   const UserInfo = useUserStore(selectUserInfo);
   const [formRef] = Form.useForm();
   const submit = useSubmit();
@@ -59,7 +59,7 @@ const UserInfo: FC = () => {
           <Button
             type="primary"
             htmlType="submit"
-            loading={navigation.state !== "idle" && { delay: 200 }}
+            loading={submitting && { delay: 200 }}
           >
             保存
           </Button>
