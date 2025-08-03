@@ -16,6 +16,7 @@ const UserPassword: FC = () => {
   }
   // 提交表单的处理函数
   const onFinish = (values: ResetPwdForm) => {
+    if (submitting) return;
     submit(values, { method: "PATCH" });
   };
   return (

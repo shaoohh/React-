@@ -2,7 +2,12 @@ import type { FC } from "react";
 import { useState, useEffect } from "react";
 import { Button, Popconfirm } from "antd";
 import type { PopconfirmProps } from "antd";
-import { useSubmit, useActionData, useLocation } from "react-router-dom";
+import {
+  useSubmit,
+  useActionData,
+  useLocation,
+  useAsyncValue,
+} from "react-router-dom";
 import { useNavSubmitting, useNavLoading } from "@/utils/hooks";
 import { useLoaderData } from "react-router-dom";
 const BtnDeleteArticle: FC<{ id: number }> = ({ id }) => {
@@ -16,10 +21,12 @@ const BtnDeleteArticle: FC<{ id: number }> = ({ id }) => {
   const loading = useNavLoading("DELETE", location.pathname + location.search);
   const actionData = useActionData() as boolean | null;
   const loaderData = useLoaderData() as {
-    total: number;
     q: ArtListQuery;
-    list: Article[];
   } | null;
+  const [, artListResult] = useAsyncValue() as [
+    BaseResponse<CateItem[]>,
+    ArticleListResponse
+  ];
   useEffect(() => {
     if (loading && actionData) {
       setOpen(false);
@@ -32,7 +39,9 @@ const BtnDeleteArticle: FC<{ id: number }> = ({ id }) => {
     //3.当前页不是第一页
     let needBack = false;
     if (loaderData) {
-      const { list, q, total } = loaderData;
+      const { q } = loaderData;
+      const list = artListResult.data || [];
+      const total = artListResult.total;
       needBack =
         list.length === 1 &&
         q.pagenum !== 1 &&

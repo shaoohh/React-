@@ -1,20 +1,22 @@
 import type { FC } from "react";
 import { Breadcrumb } from "antd";
 import BreadcrumbItem from "antd/es/breadcrumb/BreadcrumbItem";
-import { useLoaderData, useLocation, matchPath } from "react-router-dom";
+import { useLocation, matchPath, useAsyncValue } from "react-router-dom";
 import { useMemo } from "react";
 type BreadcrumbItem = {
   title: string;
 };
 const RootBreadcrumb: FC = () => {
-  const loaderData = useLoaderData() as { menus: MenuItem[] } | null;
+  // const loaderData = useLoaderData() as { menus: MenuItem[] } | null;
+  const [menuResult] = useAsyncValue() as [BaseResponse<MenuItem[]>];
+  const menus = useMemo(() => menuResult.data || [], [menuResult]);
   const location = useLocation();
   const nowPath = location.pathname === "/" ? "/home" : location.pathname;
   //递归处理面包屑 只有loaderData，nowPath发生变化时才重新计算
   //useMemo 用于缓存计算结果，只有依赖项发生变化时才重新
   const items = useMemo(
-    () => resolveBreadcrumbItems(loaderData?.menus, nowPath),
-    [loaderData, nowPath]
+    () => resolveBreadcrumbItems(menus, nowPath),
+    [menus, nowPath]
   );
   return <Breadcrumb items={items} />;
 };

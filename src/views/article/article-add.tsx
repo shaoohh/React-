@@ -20,6 +20,7 @@ import { StorageValue } from "zustand/middleware";
 import type { ArtAddStore } from "@/store/art-add-store";
 import { ClearOutlined } from "@ant-design/icons";
 import { useEffect, useRef } from "react";
+import { defer } from "react-router-dom";
 //静态数据源,没必要定义在组件中
 export const stepItems = [
   {
@@ -94,10 +95,9 @@ export const loader = async () => {
   if (localData?.state.current === ArticleSteps.done) {
     resetCurrent();
   }
-  const [err, res] = await to(getCateListApi());
-  if (err) return null;
+  const result = getCateListApi();
 
-  return { cates: res.data };
+  return defer({ result });
 };
 export const action = async () => {
   const article = useArtADDStore.getState().article;

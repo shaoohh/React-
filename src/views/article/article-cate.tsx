@@ -6,12 +6,20 @@ import {
   delCateApi,
 } from "@/api/cate-api";
 import to from "await-to-js";
-import { ActionFunctionArgs, useLoaderData } from "react-router-dom";
+import {
+  ActionFunctionArgs,
+  useLoaderData,
+  defer,
+  Await,
+} from "react-router-dom";
 import { Table, Space, message } from "antd";
 import type { TableProps } from "antd";
 import ButtonAdd from "@/components/article-cate/btn-add";
 import ButtonEdit from "@/components/article-cate/btn-edit.tsx";
 import ButtonDelete from "@/components/article-cate/btn-del";
+import { Suspense } from "react";
+import { delay } from "@/utils/index.ts";
+import LoaderErrorElement from "@/components/common/loader-error-element";
 const columns: TableProps<CateItem>["columns"] = [
   {
     title: "序号",
@@ -35,31 +43,39 @@ const columns: TableProps<CateItem>["columns"] = [
   },
 ];
 const ArticleCate: FC = () => {
-  const loaderData = useLoaderData() as { cates: CateItem[] | null };
+  const loaderData = useLoaderData() as {
+    result: Promise<BaseResponse<CateItem[]>>;
+  };
 
   return (
-    loaderData && (
-      <Space direction="vertical" style={{ display: "flex" }}>
-        <ButtonAdd />
-        {/* 表格区域 */}
-        <Table
-          dataSource={loaderData.cates || []}
-          columns={columns}
-          size="middle"
-          rowKey="id"
-          pagination={false}
-          bordered
-        />
-      </Space>
-    )
+    <Suspense fallback={<Table loading={true} />}>
+      <Await resolve={loaderData.result} errorElement={<LoaderErrorElement />}>
+        {(result: BaseResponse<CateItem[]>) => (
+          <Space direction="vertical" style={{ display: "flex" }}>
+            <ButtonAdd />
+            {/* 表格区域 */}
+            <Table
+              dataSource={result.data}
+              columns={columns}
+              size="middle"
+              rowKey="id"
+              pagination={false}
+              bordered
+            />
+          </Space>
+        )}
+      </Await>
+    </Suspense>
   );
 };
 export default ArticleCate;
 
 export const loader = async () => {
-  const [err, res] = await to(getCateListApi());
-  if (err) return null;
-  return { cates: res.data };
+  const result = getCateListApi();
+  //如果想要减少loader的执行时间那么异步的Ajax操作，可以不在loader中进行await等待
+  //而是直接把Promise return给组件，让组件自己进行Promise等待
+
+  return defer({ result });
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {

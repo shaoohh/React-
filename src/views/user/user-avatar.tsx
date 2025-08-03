@@ -34,6 +34,7 @@ const UserAvatar: FC = () => {
     };
   };
   const saveAvatar = () => {
+    if (submitting) return;
     submit(
       { avatar: newAvatar },
       {

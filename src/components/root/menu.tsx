@@ -12,7 +12,7 @@ import {
   PictureOutlined,
   KeyOutlined,
 } from "@ant-design/icons";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useAsyncValue, useLoaderData, useNavigate } from "react-router-dom";
 import { useState } from "react";
 const iconMap = {
   //键值对
@@ -33,15 +33,16 @@ import { useLocation } from "react-router-dom";
 const rootSubmenuKeys = ["2", "3"];
 
 const RootMenu: FC = () => {
-  const data = useLoaderData() as { menus: MenuItem[] };
-
+  // const data = useLoaderData() as { menus: MenuItem[] };
+  const [menuResult] = useAsyncValue() as [BaseResponse<MenuItem[]>, void];
+  const menus = menuResult.data || [];
   //在函数式组件中不能按条件执行hook
   const navgiate = useNavigate();
   const location = useLocation();
   //默认被选中的菜单项
   const selectedKey = location.pathname === "/" ? "/home" : location.pathname;
   const [openKeys, setOpenKeys] = useState<string[]>([
-    getOpenKey(data?.menus, selectedKey),
+    getOpenKey(menus, selectedKey),
   ]);
   const onOpenChange: MenuProps["onOpenChange"] = (keys) => {
     const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
@@ -52,8 +53,8 @@ const RootMenu: FC = () => {
     }
   };
 
-  if (!data) return;
-  const { menus } = data;
+  // if (!data) return;
+  // const { menus } = data;
   //递归处理每个菜单图标
   resolveMenuIcon(menus);
   const onMenuItemClick: MenuProps["onClick"] = ({ key }) => {

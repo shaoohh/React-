@@ -52,6 +52,7 @@ export const initArticle = async (id: string) => {
       state.article = res.data;
     }
   });
+  return true;
 };
 
 export const selectCurrent = (state: EditStore) => state.current;

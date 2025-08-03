@@ -3,7 +3,7 @@ import useArticleEditStore, {
   initArticle,
   resetCurrent,
 } from "@/store/art-edit-store";
-import { LoaderFunctionArgs } from "react-router-dom";
+import { defer, LoaderFunctionArgs } from "react-router-dom";
 import { stepItems } from "@/views/article/article-add";
 import { message, Modal, Steps } from "antd";
 import EditBase from "@/components/article-edit/art-base";
@@ -74,13 +74,14 @@ export default ArticleEdit;
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   //回显文章数据
-  await initArticle(params.id!);
+  const flag = initArticle(params.id!);
   //请求文章分类的数据
-  const [err, res] = await to(getCateListApi());
-  if (err) return null;
+  const cates = getCateListApi();
   //重置current值
   resetCurrent();
-  return { cates: res.data };
+  return defer({ cates, flag });
+  //方案1：把多个Promise 封装到Promise.all([])的数组中，统一返回给组件
+  //方案2：把多个Promise封装到defer对象的多个属性中，在组件中就可以只使用Await等待自己需要的数据
 };
 export const action = async () => {
   //拿到全局Store中存储的信息

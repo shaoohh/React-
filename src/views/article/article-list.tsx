@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import ArticleListSearch from "@/components/article-list/list-search";
-import { Button, Flex, message, Space } from "antd";
+import { Button, Flex, message, Space, Skeleton, Spin } from "antd";
 import {
   useNavigate,
   useLoaderData,
@@ -9,39 +9,64 @@ import {
 } from "react-router-dom";
 import { getCateListApi } from "@/api/cate-api";
 import to from "await-to-js";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router-dom";
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  defer,
+  Await,
+  useNavigation,
+} from "react-router-dom";
 import { getArticleListApi, deleteArticleApi } from "@/api/article-api";
 import ArticleListTable from "@/components/article-list/list-table";
 import { useNavLoading } from "@/utils/hooks";
+import { Suspense, useMemo } from "react";
+import LoaderErrorElement from "@/components/common/loader-error-element";
 const ArticleList: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const loaderData = useLoaderData() as {
-    list: Article[];
-    total: number;
+    result: Promise<[BaseResponse<CateItem[]>, ArticleListResponse]>;
     q: ArtListQuery;
-  } | null;
-  const loading = useNavLoading("DELETE", location.pathname + location.search);
+  };
+  // const loading = useNavLoading("DELETE", location.pathname + location.search);
+  const navigation = useNavigation();
+  const navLoading = useMemo(() => {
+    if (
+      navigation.state === "loading" &&
+      navigation.location.pathname === "/art-list"
+    ) {
+      return true;
+    }
+    return false;
+  }, [navigation.state, navigation.location?.pathname]);
   return (
-    <div>
-      <Space direction="vertical" style={{ display: "flex" }}>
-        <Flex justify="space-between">
-          <ArticleListSearch />
-          <Button type="primary" onClick={() => navigate("/art-add")}>
-            添加文章
-          </Button>
-        </Flex>
-        <ArticleListTable
-          dataSource={loaderData?.list}
-          rowKey="id"
-          size="middle"
-          bordered
-          total={loaderData?.total}
-          {...loaderData?.q}
-          loading={loading}
-        />
-      </Space>
-    </div>
+    <Suspense fallback={<Skeleton active />}>
+      <Await resolve={loaderData.result} errorElement={<LoaderErrorElement />}>
+        {(result: [BaseResponse<CateItem[]>, ArticleListResponse]) => {
+          const artListResult = result[1];
+          return (
+            <Spin spinning={navLoading}>
+              <Space direction="vertical" style={{ display: "flex" }}>
+                <Flex justify="space-between">
+                  <ArticleListSearch />
+                  <Button type="primary" onClick={() => navigate("/art-add")}>
+                    添加文章
+                  </Button>
+                </Flex>
+                <ArticleListTable
+                  dataSource={artListResult?.data}
+                  rowKey="id"
+                  size="middle"
+                  bordered
+                  total={artListResult?.total}
+                  {...loaderData?.q}
+                />
+              </Space>
+            </Spin>
+          );
+        }}
+      </Await>
+    </Suspense>
   );
 };
 export default ArticleList;
@@ -57,13 +82,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     cate_id: Number(searchParams.get("cate_id")) || "",
     state: searchParams.get("state") || "",
   };
-  //获取文章分类数据
-  const [err, res] = await to(getCateListApi());
-  if (err) return null;
-  //获取文章列表数据
-  const [err2, res2] = await to(getArticleListApi(q));
-  if (err2) return null;
-  return { result: res.data, q, list: res2.data, total: res2.total };
+  // //获取文章分类数据
+  // const [err, res] = await to(getCateListApi());
+  // if (err) return null;
+  // //获取文章列表数据
+  // const [err2, res2] = await to(getArticleListApi(q));
+  // if (err2) return null;
+  const result = Promise.all([getCateListApi(), getArticleListApi(q)]);
+  //return { result: res.data, q, list: res2.data, total: res2.total };
+  return defer({ q, result });
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {

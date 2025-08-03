@@ -13,6 +13,7 @@ const UserInfo: FC = () => {
   const [formRef] = Form.useForm();
   const submit = useSubmit();
   const onFinish = (values: UserInfoForm) => {
+    if (submitting) return;
     submit(values, { method: "PUT" });
   };
   return (
